@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Preguntas</title>
+    <style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e8f5e9; /* Fondo Verde Claro */
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #000000; /* Verde Oscuro */
+    font-size: 1.3em; /* Tamaño de fuente para el título */
+    font-family: 'Arial', sans-serif; /* Tipo de fuente para el título */
+    font-weight: bold; /* Peso de la fuente para hacer el título más destacado */
+    margin: 0 0 20px; /* Márgenes para el título (0 arriba, 0 abajo, 20px en la parte inferior) */
+}
+
+
+.intro-text {
+    margin-bottom: 20px; /* Espacio debajo del texto introductorio */
+    font-size: 16px; /* Tamaño de fuente adecuado */
+    line-height: 1.4; /* Altura de línea para mejorar la legibilidad */
+}
+
+.table-container {
+    width: 100%; /* Asegura que el contenedor de la tabla ocupe todo el ancho disponible */
+    overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Asegura que todas las celdas de la tabla tengan el mismo ancho */
+}
+
+thead th {
+    background-color: #f1f8e9; /* Verde Muy Claro */
+    color: #000000; /* Verde Más Oscuro */
+}
+
+th, td {
+    border: 1px solid #000000; /* negro */
+    padding: 8px;
+    text-align: center;
+    box-sizing: border-box; /* Incluye el padding y border en el ancho total de las celdas */
+}
+
+th:nth-child(1), td:nth-child(1) {
+    width: 50%; /* Columna de preguntas ocupa el 80% del ancho */
+}
+
+th:nth-child(2), td:nth-child(2),
+th:nth-child(3), td:nth-child(3),
+th:nth-child(4), td:nth-child(4),
+th:nth-child(5), td:nth-child(5),
+th:nth-child(6), td:nth-child(6) {
+    width: 10%; /* Cada columna de opciones de respuesta ocupa el ancho que debe ocupar*/
+}
+
+.question-header {
+    text-align: center;
+    font-weight: normal;
+}
+
+.question-cell {
+    text-align: left;
+}
+
+.option-cell {
+    text-align: center;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #66bb6a; /* Verde Claro */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #43a047; /* Verde Más Oscuro */
+}
+
+.hidden {
+    display: none;
+}
+
+.result {
+    padding: 10px;
+    background-color: #e8f5e9; /* Verde Claro */
+    border: 2px solid #66bb6a; /* Verde Claro */
+    border-radius: 5px;
+}
+
+
+
+    </style>
+</head>
+<body>
+
+
+<body>
+
+        <p class="intro-text"></p>
+
+
+
+            
+                <tbody>
+
+
+                    <!-- Pregunta de validación 2 -->
+                    <tr>
+                        <td class="question-cell">Soy  jefe de otras personas en mi trabajo</td>
+                        <td class="option-cell" colspan="5">
+                            <label><input type="radio" name="pval2" value="Sí"> Sí</label>
+                            <label><input type="radio" name="pval2" value="No"> No</label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="submit" id="submitBtn">Enviar</button>
+        </form>
+
+<script>
+
+const p1a105results = JSON.parse(localStorage.getItem('p1a105results')) || {};
+
+    async function sendResultsToServer(data) {
+        try {
+            const response = await fetch('https://yourapi.example.com/save-results', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al almacenar los resultados en el servidor.');
+            }
+        } catch (error) {
+            console.error('Error al enviar datos al servidor:', error);
+        }
+    }
+
+    function getValidationAnswer() {
+        return document.querySelector('input[name="pval2"]:checked')?.value;
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', async function (event) {
+        event.preventDefault(); // Evita el envío del formulario
+
+        // Verifica la pregunta de validación pval2
+        const pval2 = getValidationAnswer();
+        if (!pval2) {
+            alert('Por favor, responda todas las preguntas.');
+            return;
+        }
+
+    // Actualizar el almacenamiento local con los nuevos resultados combinados
+    localStorage.setItem('p1a105results', JSON.stringify({ ...p1a105results }));
+
+        // Envía los resultados al servidor
+        await sendResultsToServer({ pval2 });
+
+        // Redirige según la respuesta de la última pregunta
+        if (pval2 === 'Sí') {
+            window.location.href = 'form3-part4-intraA.html';
+        } else if (pval2 === 'No') {
+            window.location.href = 'form4-part1-extraA.html';
+        }
+    });
+</script>
+
+
+
+
+</body>
+</html>
